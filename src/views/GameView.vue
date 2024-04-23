@@ -13,7 +13,7 @@
 
         <div class="div-puntaje rounded p-3" >
             <p class="h3 text-center fw-bold">Puntos</p>
-            <div v-if="showTeamFirst" class="d-flex justify-content-around col-12">
+            <div v-if="showTeamFirst == 1" class="d-flex justify-content-around col-12">
                 <div class="col-6">
                     <p class="points text-center">{{ puntosEquipo1 }}</p>
 					<div class="d-flex justify-content-center">
@@ -45,7 +45,7 @@
 
 		<div class="mt-4">
 			<p class="h4 text-center fw-bold">Sets</p>
-			<div v-if="showTeamFirst" class="d-flex justify-content-around col-12">
+			<div v-if="showTeamFirst == 1" class="d-flex justify-content-around col-12">
                 <div class="col-6">
                     <p class="sets text-center">{{ equipo1Sets }}</p>
 					<p class="equipo text-center">{{ equipo1 }}</p>
@@ -70,7 +70,7 @@
 		</div>
 
 		<div class="d-flex justify-content-center align-items-center mt-3">
-			<button class="btn btn-secondary mx-4"><i class="fa-solid fa-arrow-left h2 my-auto p-2"></i></button>
+			<button class="btn btn-secondary mx-4" @click="deshacerAccion"><i class="fa-solid fa-arrow-left h2 my-auto p-2"></i></button>
 			<button class="btn btn-secondary mx-4" @click="showTeamSwitch"><i class="fa-solid fa-right-left h2 my-auto p-2"></i></button>
 		</div>
 	</div>
@@ -84,27 +84,49 @@ export default {
 			puntosEquipo2: localStorage.getItem("puntosEquipo2") || 0,
 			equipo1: this.$route.query.equipo1,
 			equipo2: this.$route.query.equipo2,
-			showTeamFirst: localStorage.getItem("showTeamFirst") || true,
+			showTeamFirst: localStorage.getItem("showTeamFirst") || 1,
 			equipo1Sets: localStorage.getItem("equipo1Sets") || 0,
 			equipo2Sets: localStorage.getItem("equipo2Sets") || 0,
+            acciones: [],
+
 		};
 	},
 	methods: {
 		puntoEquipo1() {
 			this.puntosEquipo1++;
-			localStorage.setItem("puntosEquipo1", this.puntosEquipo1);
-
+			// localStorage.setItem("puntosEquipo1", this.puntosEquipo1);
+            this.acciones.push({ tipo: "suma", equipo: 1 });
+            this.guardarPuntos();
 			this.setWin();
 		},
 		puntoEquipo2() {
 			this.puntosEquipo2++;
-			localStorage.setItem("puntosEquipo2", this.puntosEquipo2);
-
+			// localStorage.setItem("puntosEquipo2", this.puntosEquipo2);
+            this.acciones.push({ tipo: "suma", equipo: 2 });
+            this.guardarPuntos();
 			this.setWin();
 		},
+        deshacerAccion() {
+            const ultimaAccion = this.acciones.pop();
+            if (ultimaAccion) {
+                if (ultimaAccion.tipo === "suma") {
+                    if (ultimaAccion.equipo === 1) {
+                        this.puntosEquipo1--;
+                    } else {
+                        this.puntosEquipo2--;
+                    }
+                    this.guardarPuntos();
+                }
+                // Puedes agregar más tipos de acciones aquí si lo necesitas
+            }
+        },
+        guardarPuntos() {
+            localStorage.setItem("puntosEquipo1", this.puntosEquipo1);
+            localStorage.setItem("puntosEquipo2", this.puntosEquipo2);
+        },
 		showTeamSwitch() {
-			this.showTeamFirst = !this.showTeamFirst;
-			localStorage.setItem("showTeamFirst", this.showTeamFirst);
+			this.showTeamFirst = this.showTeamFirst == 1 ? 2 : 1;
+            localStorage.setItem("showTeamFirst", this.showTeamFirst); // Convertir a cadena
 		},
 		setWin(){
 			if(this.puntosEquipo1 >= 11){
