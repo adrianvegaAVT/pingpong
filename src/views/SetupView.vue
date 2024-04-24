@@ -1,5 +1,5 @@
 <template>
-	<div class="col-sm-12 col-xl-3 col-lg-3 col-md-6 m-4">
+	<div class="col-sm-12 col-xl-3 col-lg-3 col-md-6 p-4 mx-auto my-auto">
 		<div class="d-flex justify-content-end">
 			<img class="img-log" src="img/local/uped-logo.png" alt="" />
 		</div>
@@ -52,6 +52,8 @@ export default {
 
 			localStorage.setItem("puntosEquipo1", 0);
 			localStorage.setItem("puntosEquipo2", 0);
+			localStorage.setItem("equipo1Sets", 0);
+			localStorage.setItem("equipo2Sets", 0);
 			this.$router.push({
 				name: "game",
 				query: {
